@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aayan Bakhru — Finance & Data Science</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ── RESET & TOKENS ───────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --teal:       #0d9488;
+      --teal-dim:   #0f766e;
+      --teal-pale:  #f0fdfa;
+      --teal-line:  #99f6e4;
+      --ink:        #0c1a18;
+      --ink-2:      #2e4440;
+      --ink-3:      #6b8f8a;
+      --rule:       #e4eeec;
+      --bg:         #ffffff;
+      --bg-alt:     #f9fdfb;
+      --serif:      'Playfair Display', Georgia, serif;
+      --sans:       'Outfit', system-ui, sans-serif;
+      --ease:       cubic-bezier(.4,0,.2,1);
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ── SCROLL REVEAL ───────────────────────────────────────── */
+    .sr {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity .65s var(--ease), transform .65s var(--ease);
+    }
+    .sr.in { opacity: 1; transform: none; }
+    .sr.d1 { transition-delay: .1s; }
+    .sr.d2 { transition-delay: .2s; }
+    .sr.d3 { transition-delay: .3s; }
+    .sr.d4 { transition-delay: .4s; }
+    .sr.d5 { transition-delay: .5s; }
+
+    /* ── LAYOUT ──────────────────────────────────────────────── */
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+    section { padding: 110px 0; }
+
+    .eyebrow {
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--teal);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .eyebrow::after {
+      content: '';
+      flex: 1;
+      max-width: 48px;
+      height: 1px;
+      background: var(--teal-line);
+    }
+
+    h2.sec-title {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 400;
+      line-height: 1.15;
+      color: var(--ink);
+      margin-bottom: 60px;
+    }
+    h2.sec-title em { font-style: italic; color: var(--teal); }
+
+    /* ── NAV ─────────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: 62px;
+      background: rgba(255,255,255,.9);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--rule);
+      transition: box-shadow .3s;
+    }
+    nav.up { box-shadow: 0 4px 24px rgba(13,148,136,.07); }
+    .nav-wrap {
+      max-width: 1100px; margin: 0 auto; padding: 0 40px;
+      height: 100%; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: .02em;
+    }
+    .nav-brand span { color: var(--teal); }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      font-size: 12.5px;
+      font-weight: 400;
+      letter-spacing: .07em;
+      color: var(--ink-3);
+      text-decoration: none;
+      transition: color .25s;
+    }
+    .nav-links a:hover { color: var(--teal); }
+
+    /* ── HERO ────────────────────────────────────────────────── */
+    #hero {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 62px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(13,148,136,.13) 1px, transparent 1px);
+      background-size: 36px 36px;
+      mask-image: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,.4) 30%, rgba(0,0,0,.4) 70%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--teal);
+      border: 1px solid var(--teal-line);
+      background: var(--teal-pale);
+      padding: 6px 14px;
+      margin-bottom: 28px;
+    }
+    .hero-tag .dot {
+      width: 6px; height: 6px;
+      background: var(--teal);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: .4; transform: scale(.7); }
+    }
+
+    .hero-name {
+      font-family: var(--serif);
+      font-size: clamp(3.8rem, 9vw, 8rem);
+      font-weight: 400;
+      line-height: .95;
+      color: var(--ink);
+      margin-bottom: 32px;
+      letter-spacing: -.01em;
+    }
+    .hero-name em {
+      font-style: italic;
+      color: var(--teal);
+      display: block;
+    }
+
+    .hero-sub {
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--ink-3);
+      letter-spacing: .03em;
+      margin-bottom: 48px;
+      max-width: 480px;
+    }
+
+    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      font-size: 12.5px;
+      font-weight: 500;
+      letter-spacing: .09em;
+      padding: 14px 30px;
+      transition: transform .2s var(--ease), background .2s, color .2s, border-color .2s;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-solid { background: var(--teal); color: #fff; }
+    .btn-solid:hover { background: var(--teal-dim); }
+    .btn-outline { border: 1.5px solid var(--ink); color: var(--ink); }
+    .btn-outline:hover { border-color: var(--teal); color: var(--teal); }
+
+    .hero-stats {
+      display: flex;
+      gap: 0;
+      margin-top: 80px;
+      border-top: 1px solid var(--rule);
+      padding-top: 36px;
+    }
+    .h-stat { flex: 1; }
+    .h-stat-n {
+      font-family: var(--serif);
+      font-size: clamp(1.5rem, 2.5vw, 2.1rem);
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+    .h-stat-l {
+      font-size: 10.5px;
+      font-weight: 400;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+    }
+    .h-div { width: 1px; background: var(--rule); margin: 0 44px; align-self: stretch; }
+
+    /* ── ABOUT ───────────────────────────────────────────────── */
+    #about { background: var(--bg-alt); border-top: 1px solid var(--rule); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .about-lead {
+      font-family: var(--serif);
+      font-size: clamp(1.5rem, 2.5vw, 2rem);
+      font-weight: 400;
+      line-height: 1.4;
+      color: var(--ink);
+      margin-bottom: 28px;
+    }
+    .about-lead em { color: var(--teal); font-style: italic; }
+    .about-body p {
+      font-size: 15px;
+      line-height: 1.85;
+      color: var(--ink-2);
+      margin-bottom: 16px;
+    }
+
+    .about-cards { display: flex; flex-direction: column; gap: 16px; }
+    .a-card {
+      background: var(--bg);
+      border: 1px solid var(--rule);
+      border-left: 3px solid var(--teal);
+      padding: 22px 24px;
+    }
+    .a-card-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 10px;
+    }
+    .a-card p {
+      font-size: 13.5px;
+      line-height: 1.75;
+      color: var(--ink-2);
+      margin-bottom: 6px;
+    }
+    .a-card p:last-child { margin-bottom: 0; }
+    .a-card strong { font-weight: 500; color: var(--ink); }
+
+    /* ── EXPERIENCE ──────────────────────────────────────────── */
+    #experience { background: var(--bg); border-top: 1px solid var(--rule); }
+
+    .exp-list { display: flex; flex-direction: column; }
+    .exp-row {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 48px;
+      padding: 36px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .exp-row:first-child { border-top: 1px solid var(--rule); }
+
+    .exp-meta { padding-top: 3px; }
+    .exp-date {
+      font-size: 11.5px;
+      color: var(--ink-3);
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+    .exp-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      font-size: 9.5px;
+      font-weight: 500;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .badge-finance    { background: #f0fdfa; color: var(--teal); }
+    .badge-leadership { background: #f0fdf4; color: #16a34a; }
+    .badge-coaching   { background: #fefce8; color: #a16207; }
+
+    .exp-title {
+      font-family: var(--serif);
+      font-size: 1.35rem;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+    .exp-company {
+      font-size: 12.5px;
+      color: var(--teal);
+      font-weight: 400;
+      margin-bottom: 14px;
+    }
+    .exp-desc {
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--ink-2);
+    }
+    .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+    .exp-bullets li {
+      font-size: 13.5px;
+      line-height: 1.75;
+      color: var(--ink-2);
+      padding-left: 20px;
+      position: relative;
+    }
+    .exp-bullets li::before {
+      content: '–';
+      position: absolute;
+      left: 0;
+      color: var(--teal);
+    }
+
+    /* ── SKILLS ──────────────────────────────────────────────── */
+    #skills { background: var(--bg-alt); border-top: 1px solid var(--rule); }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .s-card {
+      background: var(--bg);
+      border: 1px solid var(--rule);
+      padding: 32px 32px 28px;
+      position: relative;
+      overflow: hidden;
+      transition: transform .25s var(--ease), border-color .25s;
+    }
+    .s-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--teal);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .35s var(--ease);
+    }
+    .s-card:hover { transform: translateY(-4px); border-color: var(--teal-line); }
+    .s-card:hover::after { transform: scaleX(1); }
+
+    .s-icon {
+      font-size: 1.5rem;
+      margin-bottom: 14px;
+      line-height: 1;
+      color: var(--teal);
+    }
+    .s-card h4 {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      font-weight: 400;
+      color: var(--ink);
+      margin-bottom: 18px;
+    }
+    .tag-cloud { display: flex; flex-wrap: wrap; gap: 7px; }
+    .tag {
+      padding: 5px 12px;
+      border: 1px solid var(--rule);
+      font-size: 11.5px;
+      color: var(--ink-2);
+      font-weight: 400;
+      transition: background .2s, border-color .2s, color .2s;
+    }
+    .s-card:hover .tag {
+      background: var(--teal-pale);
+      border-color: var(--teal-line);
+      color: var(--teal);
+    }
+
+    /* ── CONTACT ─────────────────────────────────────────────── */
+    #contact {
+      background: var(--ink);
+      border-top: 1px solid var(--rule);
+      padding: 110px 0 80px;
+    }
+    #contact .eyebrow { color: var(--teal-line); }
+    #contact .eyebrow::after { background: var(--teal); }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+    .contact-headline {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 400;
+      line-height: 1.15;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+    .contact-headline em { font-style: italic; color: var(--teal-line); }
+    .contact-sub {
+      font-size: 14.5px;
+      color: rgba(255,255,255,.45);
+      line-height: 1.8;
+    }
+
+    .contact-rows { display: flex; flex-direction: column; }
+    .c-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      text-decoration: none;
+      transition: padding-left .25s var(--ease);
+    }
+    .c-row:first-child { border-top: 1px solid rgba(255,255,255,.08); }
+    a.c-row:hover { padding-left: 10px; }
+    .c-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--teal-line);
+      min-width: 90px;
+    }
+    .c-value {
+      font-size: 13.5px;
+      font-weight: 300;
+      color: rgba(255,255,255,.65);
+      transition: color .2s;
+    }
+    a.c-row:hover .c-value { color: #fff; }
+
+    /* ── FOOTER ──────────────────────────────────────────────── */
+    footer {
+      background: var(--ink);
+      border-top: 1px solid rgba(255,255,255,.07);
+      padding: 26px 0;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto; padding: 0 40px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-brand { font-family: var(--serif); font-size: .95rem; color: rgba(255,255,255,.35); }
+    .footer-note { font-size: 11px; color: rgba(255,255,255,.2); letter-spacing: .05em; }
+
+    /* ── RESPONSIVE ──────────────────────────────────────────── */
+    /* ── HERO PHOTO ──────────────────────────────────────────── */
+    .hero-cols {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 60px;
+      margin-bottom: 0;
+    }
+    .hero-text { flex: 1; min-width: 0; }
+
+    .hero-photo {
+      flex-shrink: 0;
+      transition-delay: .3s;
+    }
+    .hero-photo-wrap {
+      width: 290px;
+      height: 350px;
+      position: relative;
+    }
+    .hero-photo-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      top: 14px;
+      left: 14px;
+      right: -14px;
+      bottom: -14px;
+      border: 2px solid var(--teal);
+      z-index: 0;
+      transition: transform .35s var(--ease);
+      pointer-events: none;
+    }
+    .hero-photo-wrap:hover::after { transform: translate(-5px, -5px); }
+    .hero-photo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      position: relative;
+      z-index: 1;
+      filter: grayscale(15%);
+      transition: filter .4s var(--ease);
+    }
+    .hero-photo-wrap:hover img { filter: grayscale(0%); }
+
+    @media (max-width: 800px) {
+      .wrap { padding: 0 24px; }
+      section { padding: 80px 0; }
+      .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+      .skills-grid { grid-template-columns: 1fr; }
+      .exp-row { grid-template-columns: 1fr; gap: 10px; }
+      .exp-meta { display: flex; align-items: center; gap: 12px; }
+      .hero-stats { flex-wrap: wrap; gap: 28px; }
+      .h-div { display: none; }
+      .nav-links { gap: 20px; }
+      .footer-inner { flex-direction: column; gap: 6px; }
+      .hero-cols { flex-direction: column-reverse; align-items: center; gap: 40px; text-align: center; }
+      .hero-photo-wrap { width: 200px; height: 240px; }
+      .hero-btns { justify-content: center; }
+      .hero-sub { max-width: 100%; }
+    }
+    @media (max-width: 500px) {
+      .hero-name { font-size: 3.2rem; }
+      .nav-links { display: none; }
+      .hero-inner, .nav-wrap { padding: 0 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-wrap">
+    <a href="#hero" class="nav-brand">Aayan <span>Bakhru</span></a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-cols">
+      <div class="hero-text">
+        <div class="hero-tag sr d1"><span class="dot"></span>Available for Opportunities · 2026</div>
+        <h1 class="hero-name sr d2">Aayan<em>Bakhru</em></h1>
+        <p class="hero-sub sr d3">Finance &amp; Data Science · Rutgers University<br>Equity Research · Investment Banking · Bloomberg Certified</p>
+        <div class="hero-btns sr d4">
+          <a href="#experience" class="btn btn-solid">View My Work</a>
+          <a href="#contact" class="btn btn-outline">Get In Touch</a>
+        </div>
+      </div>
+      <div class="hero-photo sr d3">
+        <div class="hero-photo-wrap">
+          <img src="Aayan_Bakhru.png" alt="Aayan Bakhru" />
+        </div>
+      </div>
+    </div>
+    <div class="hero-stats sr d5">
+      <div class="h-stat"><div class="h-stat-n">4.0</div><div class="h-stat-l">GPA · Dean's List</div></div>
+      <div class="h-div"></div>
+      <div class="h-stat"><div class="h-stat-n">DCF</div><div class="h-stat-l">Valuation Models</div></div>
+      <div class="h-div"></div>
+      <div class="h-stat"><div class="h-stat-n">100+</div><div class="h-stat-l">Athletes Coached</div></div>
+      <div class="h-div"></div>
+      <div class="h-stat"><div class="h-stat-n">Bloomberg</div><div class="h-stat-l">Certified</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+
+<section id="about">
+  <div class="wrap">
+    <div class="eyebrow sr">01 / About</div>
+    <div class="about-grid">
+      <div class="about-body sr d1">
+        <p class="about-lead">Analytical mind,<br><em>driven by markets.</em></p>
+        <p>I'm a first-year Finance and Data Science student at Rutgers University with a perfect 4.0 GPA and a deep interest in equity research, investment banking, and the intersection of quantitative analysis with financial decision-making.</p>
+        <p>Currently an Equity Research Analyst at AugCap, I build DCF and comparable valuation models and draft investment memos on publicly traded companies. I'm also an incoming Investment Banking Analyst joining in spring 2026.</p>
+        <p>Outside of finance, I'm a varsity tennis captain and state-ranked player who has spent years coaching athletes of all levels — sharpening my leadership, communication, and competitive edge.</p>
+      </div>
+      <div class="about-cards sr d2">
+        <div class="a-card">
+          <div class="a-card-label">Education</div>
+          <p><strong>Rutgers University</strong><br>B.S. Finance &amp; Data Science · GPA 4.0<br>Sept 2025 – May 2029 · Dean's List</p>
+          <p style="margin-top:10px"><strong>Hillsborough High School</strong><br>Diploma · GPA 4.0 · SAT 1410<br>AP Scholar · All-Conference Tennis (2×)</p>
+        </div>
+        <div class="a-card">
+          <div class="a-card-label">Certifications</div>
+          <p>Bloomberg Finance Fundamentals</p>
+          <p>Bloomberg Market Concepts</p>
+        </div>
+        <div class="a-card">
+          <div class="a-card-label">Languages</div>
+          <p>English &nbsp;·&nbsp; Hindi (Conversational)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="wrap">
+    <div class="eyebrow sr">02 / Experience</div>
+    <h2 class="sec-title sr">Work &amp; <em>Leadership</em></h2>
+    <div class="exp-list">
+
+      <div class="exp-row sr">
+        <div class="exp-meta">
+          <div class="exp-date">Mar 2026 – May 2026</div>
+          <span class="exp-badge badge-finance">Investment Banking</span>
+        </div>
+        <div>
+          <div class="exp-title">Investment Banking Analyst</div>
+          <div class="exp-company">AugCap · Remote</div>
+          <p class="exp-desc">Incoming analyst role — applying equity research and financial modelling expertise in an investment banking context.</p>
+        </div>
+      </div>
+
+      <div class="exp-row sr">
+        <div class="exp-meta">
+          <div class="exp-date">Dec 2025 – Present</div>
+          <span class="exp-badge badge-finance">Equity Research</span>
+        </div>
+        <div>
+          <div class="exp-title">Equity Research Analyst</div>
+          <div class="exp-company">AugCap · Remote</div>
+          <ul class="exp-bullets">
+            <li>Conducted in-depth equity research on a publicly traded semiconductor company</li>
+            <li>Built DCF and comparable valuation models to support an investment recommendation</li>
+            <li>Drafted investment memos using financial insights, valuation analysis, and risk assessment</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-row sr">
+        <div class="exp-meta">
+          <div class="exp-date">Sep 2025 – Dec 2025</div>
+          <span class="exp-badge badge-leadership">Leadership</span>
+        </div>
+        <div>
+          <div class="exp-title">Team Lead</div>
+          <div class="exp-company">Bender Trust · New Brunswick, NJ</div>
+          <ul class="exp-bullets">
+            <li>Conducted equity research and financial analysis for Progressive (PGR)</li>
+            <li>Trained in investment banking tools and valuation techniques through LIBOR workshops</li>
+            <li>Developed and presented investment recommendations to a Wall Street investment banker</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-row sr">
+        <div class="exp-meta">
+          <div class="exp-date">Jun 2022 – Aug 2025</div>
+          <span class="exp-badge badge-coaching">Coaching</span>
+        </div>
+        <div>
+          <div class="exp-title">Senior Camp Counselor / Coach</div>
+          <div class="exp-company">Nassau Tennis Club · Skillman, NJ</div>
+          <ul class="exp-bullets">
+            <li>Coached 100+ youth tennis players of varying skill levels for high school competition</li>
+            <li>Prepared 50+ youth for USTA tournaments and state &amp; national ranking advancement</li>
+            <li>Trained 10+ adults from beginner to intermediate level</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-row sr">
+        <div class="exp-meta">
+          <div class="exp-date">Jun 2024 – Aug 2025</div>
+          <span class="exp-badge badge-coaching">Coaching</span>
+        </div>
+        <div>
+          <div class="exp-title">Tennis Instructor / Private Coach</div>
+          <div class="exp-company">Raider Tennis Clinics · Hillsborough, NJ</div>
+          <ul class="exp-bullets">
+            <li>Coached 50+ middle and high school athletes toward varsity-level play</li>
+            <li>Led private lessons as a state-ranked player on a top-15 ranked team</li>
+            <li>Organized competitive match play sessions for youth athletes</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="wrap">
+    <div class="eyebrow sr">03 / Skills</div>
+    <h2 class="sec-title sr">Tools &amp; <em>Capabilities</em></h2>
+    <div class="skills-grid">
+      <div class="s-card sr d1">
+        <div class="s-icon">⬡</div>
+        <h4>Technical</h4>
+        <div class="tag-cloud">
+          <span class="tag">Python</span><span class="tag">Java</span><span class="tag">HTML</span>
+          <span class="tag">DCF Modelling</span><span class="tag">Comparable Analysis</span><span class="tag">Financial Modelling</span>
+        </div>
+      </div>
+      <div class="s-card sr d2">
+        <div class="s-icon">◈</div>
+        <h4>Finance</h4>
+        <div class="tag-cloud">
+          <span class="tag">Equity Research</span><span class="tag">Investment Memos</span>
+          <span class="tag">Risk Assessment</span><span class="tag">Valuation</span><span class="tag">Investment Banking</span>
+        </div>
+      </div>
+      <div class="s-card sr d3">
+        <div class="s-icon">◉</div>
+        <h4>Platforms &amp; Certifications</h4>
+        <div class="tag-cloud">
+          <span class="tag">Bloomberg Terminal</span>
+          <span class="tag">Bloomberg Finance Fundamentals</span>
+          <span class="tag">Bloomberg Market Concepts</span>
+        </div>
+      </div>
+      <div class="s-card sr d4">
+        <div class="s-icon">◇</div>
+        <h4>Activities &amp; Involvement</h4>
+        <div class="tag-cloud">
+          <span class="tag">LIBOR</span><span class="tag">SOF</span><span class="tag">RUValuating</span>
+          <span class="tag">Varsity Tennis Captain</span><span class="tag">HHS Stock Exchange Club</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="wrap">
+    <div class="eyebrow sr">04 / Contact</div>
+    <div class="contact-grid">
+      <div class="sr d1">
+        <h2 class="contact-headline">Let's <em>connect.</em></h2>
+        <p class="contact-sub">Whether you're looking to discuss finance, research opportunities, or anything in between — I'd love to hear from you.</p>
+      </div>
+      <div class="contact-rows sr d2">
+        <a href="mailto:abakhru03@gmail.com" class="c-row">
+          <span class="c-label">Email</span><span class="c-value">abakhru03@gmail.com →</span>
+        </a>
+        <a href="tel:6096869547" class="c-row">
+          <span class="c-label">Phone</span><span class="c-value">609-686-9547 →</span>
+        </a>
+        <div class="c-row">
+          <span class="c-label">Location</span><span class="c-value">Hillsborough, NJ</span>
+        </div>
+        <div class="c-row">
+          <span class="c-label">University</span><span class="c-value">Rutgers · New Brunswick</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <span class="footer-brand">Aayan Bakhru</span>
+    <span class="footer-note">© 2026 · Finance & Data Science · Rutgers University</span>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12, rootMargin: '0px 0px -32px 0px' });
+  document.querySelectorAll('.sr').forEach(el => io.observe(el));
+
+  // Hero fires on load
+  window.addEventListener('load', () => {
+    document.querySelectorAll('#hero .sr').forEach(el => el.classList.add('in'));
+  });
+
+  // Nav shadow
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('up', scrollY > 30), { passive: true });
+</script>
+</body>
+</html>
